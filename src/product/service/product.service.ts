@@ -35,7 +35,14 @@ export class ProductService {
       const { filter } = payload;
 
       if (filter) {
-        const { name, description, price, stock } = filter;
+        const {
+          name,
+          description,
+          priceGreater,
+          priceLess,
+          stockGreater,
+          stockLess,
+        } = filter;
         if (name) {
           parameter = (product: IProduct) => product.name === name;
         }
@@ -45,12 +52,20 @@ export class ProductService {
             product.description === description;
         }
 
-        if (price) {
-          parameter = (product: IProduct) => product.price === price;
+        if (priceGreater) {
+          parameter = (product: IProduct) => product.price > priceGreater;
         }
 
-        if (stock) {
-          parameter = (product: IProduct) => product.stock === stock;
+        if (priceLess) {
+          parameter = (product: IProduct) => product.price > priceLess;
+        }
+
+        if (stockGreater) {
+          parameter = (product: IProduct) => product.stock > stockGreater;
+        }
+
+        if (stockLess) {
+          parameter = (product: IProduct) => product.stock > stockLess;
         }
       }
     }

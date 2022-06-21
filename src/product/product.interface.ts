@@ -22,8 +22,10 @@ export interface IGetProduct {
 export interface IGetProductsFilter {
   name?: string;
   description?: string;
-  price?: number;
-  stock?: number;
+  priceGreater?: number;
+  priceLess?: number;
+  stockGreater?: number;
+  stockLess?: number;
 }
 
 export interface IGetProducts {

@@ -12,18 +12,19 @@
     "start:watch": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "start:online": "cross-env IS_DDB_LOCAL= nest start",
     "deploy": "sls deploy --verbose",
     "package": "sls package",
     "lint": "eslint \"{src,test}/**/*.ts\" --max-warnings 0",
     "test": "jest --verbose",
     "test:watch": "jest --verbose --watch",
     "test:cov": "jest --verbose --coverage",
+    "test:cov:all": "npm run test:cov && npm run test:e2e",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "sls:start": "cross-env NO_COLOR= cross-env IS_NOT_SLS= sls offline start",
     "sls:online": "cross-env NO_COLOR= cross-env IS_NOT_SLS= cross-env IS_DDB_LOCAL= sls offline",
-    "genres": "ts-node genres.ts -- \"src/**/*.schema.ts\" \"resource/dynamodb.yml\""
+    "cov:merge": "istanbul-merge --out coverage/coverage-final.json ./coverage/e2e/coverage-final.json ./coverage/unit/coverage-final.json",
+    "cov:report": "nyc report -t coverage --report-dir coverage --reporter=html --reporter=cobertura"
   },
   "dependencies": {
     "@graphql-tools/merge": "8.2.14",
@@ -69,9 +70,11 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-import": "2.26.0",
     "glob-promise": "4.2.2",
+    "istanbul-merge": "^1.1.1",
     "jest": "28.1.1",
     "js-yaml": "4.1.0",
     "lint-staged": "13.0.2",
+    "nyc": "^15.1.0",
     "prettier": "2.7.1",
     "serverless": "^3.19.0",
     "serverless-dynamodb-local": "0.2.40",
@@ -86,7 +89,6 @@
     "webpack": "^5.73.0"
   },
   "jest": {
-    "preset": "@shelf/jest-dynamodb",
     "moduleFileExtensions": [
       "js",
       "json",
@@ -97,9 +99,17 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "testTimeout": 45000
+    "coverageReporters": [
+      "html",
+      "json"
+    ],
+    "coverageDirectory": "../coverage/unit",
+    "coveragePathIgnorePatterns": [
+      ".module.ts$",
+      ".spec.ts$",
+      "migrations"
+    ],
+    "testEnvironment": "node"
   },
   "lint-staged": {
     "*.ts": [
