@@ -17,16 +17,14 @@ A starter project that makes creating a deployable AWS Serverless project extrem
 ## Technologies
 
 - [AWS Lambda](https://aws.amazon.com/lambda)
-- [AWS DynamoDB](https://aws.amazon.com/dynamodb)
 - [Serverless](https://serverless.com/framework/docs/providers/aws/)
 - [NestJS](https://docs.nestjs.com/)
 - [NestJS GraphQL](https://docs.nestjs.com/graphql/quick-start)
-- [NestJS Dynamoose](https://github.com/hardyscc/nestjs-dynamoose)
 
 ## Usage
 
 ```bash
-git clone https://github.com/hardyscc/aws-nestjs-starter.git <Your_Project_Name>
+git clone https://github.com/vousmeevoyez/serverless-nestjs-graphql <Your_Project_Name>
 cd <Your_Project_Name>
 
 npm install
@@ -78,9 +76,6 @@ $ npm run deploy
 ## Local Offline Development
 
 ```bash
-# install dynamodb local
-$ npm run ddb:install
-
 # start serverless-offline server
 $ npm run sls:start
 
@@ -91,27 +86,11 @@ $ npm run sls:online
 ## Local NestJS Development - (Optional)
 
 ```bash
-# install dynamodb local
-$ npm run ddb:install
-
-# start dynamodb local
-$ npm run ddb:start
-
 # start local nestjs server
 $ npm start
 
 # start local nestjs server in watch mode
 $ npm run start:watch
-
-# start local nestjs server and connect to online dynamodb
-$ npm run start:online
-```
-
-## Tools
-
-```bash
-# re-generate the resources/dynamodb.yml from schemas
-$ npm run genres
 ```
 
 ## Unit Testing
@@ -127,9 +106,6 @@ $ npm run test:cov
 ## E2E Testing
 
 ```bash
-# start dynamodb local
-$ npm run ddb:start
-
 # run unit test with coverage
 $ npm run test:e2e
 ```
@@ -140,78 +116,6 @@ $ npm run test:e2e
 - local: http://localhost:3000/graphql
 - AWS: https://<your_aws_deployment_id>.execute-api.<your_aws_region>.amazonaws.com/dev/graphql
 
-```graphql
-mutation {
-  createNotification(
-    input: { targetId: "device1", userId: "user1", content: "Hello World" }
-  ) {
-    id
-  }
-}
-```
-
-```graphql
-query {
-  notificationByUserId(userId: "user1") {
-    id
-    targetId
-    userId
-    content
-    createAt
-  }
-}
-```
-
-```graphql
-query {
-  notificationByTargetId(targetId: "device1") {
-    id
-    targetId
-    userId
-    content
-    createAt
-  }
-}
-```
-
-```graphql
-mutation {
-  updateNotification(
-    id: "1ca7726e-0af8-4ff1-8ef1-4eae97377162"
-    input: { status: Deleted }
-  ) {
-    id
-    targetId
-    userId
-    content
-    createAt
-  }
-}
-```
-
-## RESTful Endpoint Test
-
-> Please remove `/dev` from path if test using local nestjs mode
-
-```
-curl -X POST 'http://localhost:3000/dev/notification' \
-  -H 'Content-Type: application/json' \
-  --data-raw '{ "targetId": "device1", "userId": "user1", "content": "Hello" }'
-```
-
-```
-curl -X GET 'http://localhost:3000/dev/notification?targetId=device1'
-```
-
-```
-curl -X GET 'http://localhost:3000/dev/notification?userId=user1'
-```
-
-```
-curl -X PATCH 'http://localhost:3000/dev/notification/a30f7101-2434-4443-87fa-493c9d9d3358' \
-  -H 'Content-Type: application/json' \
-  --data-raw '{ "status": "Deleted" }'
-```
 
 ## Stay in touch
 
