@@ -1,0 +1,37 @@
+import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
+import { CreateProductInput } from "../dto/create-product.input";
+import { GetProductsInput } from "../dto/get-products.input";
+import { GetProductInput } from "../dto/get-product.input";
+import { Product } from "../dto/product.object";
+import { UpdateProductInput } from "../dto/update-product.input";
+import { ProductService } from "../service/product.service";
+
+@Resolver(() => Product)
+export class ProductResolver {
+  constructor(private readonly productService: ProductService) {}
+
+  @Mutation(() => Product)
+  createProduct(@Args("input") input: CreateProductInput) {
+    return this.productService.create(input);
+  }
+
+  @Mutation(() => Product)
+  updateProduct(@Args("input") input: UpdateProductInput) {
+    return this.productService.update(input);
+  }
+
+  @Mutation(() => Boolean)
+  deleteProduct(@Args("input") input: GetProductInput) {
+    return this.productService.delete(input);
+  }
+
+  @Query(() => Product)
+  product(@Args("input") input: GetProductInput) {
+    return this.productService.findOne(input);
+  }
+
+  @Query(() => [Product])
+  products(@Args("input", { nullable: true }) input: GetProductsInput) {
+    return this.productService.findMany(input);
+  }
+}
