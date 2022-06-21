@@ -52,6 +52,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: artifact
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@v1.6
         env:
