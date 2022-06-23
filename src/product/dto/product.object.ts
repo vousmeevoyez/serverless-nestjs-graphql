@@ -7,7 +7,7 @@ export class Product implements IProduct {
   id!: string;
 
   @Field()
-  name!: string;
+  title!: string;
 
   @Field()
   description!: string;
@@ -15,9 +15,9 @@ export class Product implements IProduct {
   @Field(() => Int)
   price!: number;
 
-  @Field(() => Int)
-  stock!: number;
-
   @Field()
   image!: string;
+
+  @Field()
+  category!: string;
 }

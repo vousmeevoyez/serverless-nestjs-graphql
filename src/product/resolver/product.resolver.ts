@@ -21,8 +21,10 @@ export class ProductResolver {
   }
 
   @Mutation(() => Boolean)
-  deleteProduct(@Args("input") input: GetProductInput) {
-    return this.productService.delete(input);
+  async deleteProduct(@Args("input") input: GetProductInput) {
+    await this.productService.delete(input);
+    // no void available on graphql
+    return true;
   }
 
   @Query(() => Product)

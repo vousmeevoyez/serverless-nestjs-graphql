@@ -1,5 +1,5 @@
+import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
-import * as uuid from "uuid";
 import {
   ICreateProduct,
   IGetProduct,
@@ -7,69 +7,62 @@ import {
   IProduct,
   IUpdateProduct,
 } from "../product.interface";
-import products from "../product.data";
 
 @Injectable()
 export class ProductService {
-  create(input: ICreateProduct): IProduct {
-    return { id: uuid.v4(), ...input };
+  url = "https://fakestoreapi.com/products";
+  constructor(private readonly httpService: HttpService) {}
+
+  async create(input: ICreateProduct): Promise<IProduct> {
+    const response = await this.httpService.post(this.url, input).toPromise();
+    console.log(response);
+    if (!response) throw new Error("error response");
+    return response.data;
   }
 
-  update({ id, ...parameter }: IUpdateProduct) {
-    const product = this.findOne({ id });
-    return { id, product, ...parameter };
+  async update({ id, ...parameter }: IUpdateProduct): Promise<IProduct> {
+    const response = await this.httpService
+      .put(`${this.url}/${id}`, { ...parameter })
+      .toPromise();
+    if (!response) throw new Error("error response");
+    return response.data;
   }
 
-  delete({ id }: IGetProduct): boolean {
-    products.filter((product: IProduct) => product.id !== id);
-    return true;
+  async delete({ id }: IGetProduct): Promise<void> {
+    const response = await this.httpService
+      .delete(`${this.url}/${id}`)
+      .toPromise();
+    if (!response) throw new Error("error response");
   }
 
-  findOne({ id }: IGetProduct) {
-    return products.find((product: IProduct) => product.id === id);
+  async findOne({ id }: IGetProduct): Promise<IProduct> {
+    const response = await this.httpService
+      .get(`${this.url}/${id}`)
+      .toPromise();
+    if (!response) throw new Error("error response");
+    return response.data;
   }
 
-  findMany(payload: IGetProducts) {
-    let parameter;
+  async findMany(payload: IGetProducts): Promise<IProduct[]> {
+    const params: Record<string, unknown> = {};
     if (payload) {
-      const { filter } = payload;
+      const { pagination, sort } = payload;
 
-      if (filter) {
-        const {
-          name,
-          description,
-          priceGreater,
-          priceLess,
-          stockGreater,
-          stockLess,
-        } = filter;
-        if (name) {
-          parameter = (product: IProduct) => product.name === name;
-        }
+      if (pagination) {
+        const { limit } = pagination;
+        params["limit"] = limit;
+      }
 
-        if (description) {
-          parameter = (product: IProduct) =>
-            product.description === description;
-        }
-
-        if (priceGreater) {
-          parameter = (product: IProduct) => product.price > priceGreater;
-        }
-
-        if (priceLess) {
-          parameter = (product: IProduct) => product.price > priceLess;
-        }
-
-        if (stockGreater) {
-          parameter = (product: IProduct) => product.stock > stockGreater;
-        }
-
-        if (stockLess) {
-          parameter = (product: IProduct) => product.stock > stockLess;
-        }
+      if (sort) {
+        const { sortBy } = sort;
+        params["sort"] = sortBy;
       }
     }
 
-    return parameter ? products.find(parameter) : products;
+    const response = await this.httpService
+      .get(this.url, { params })
+      .toPromise();
+    if (!response) throw new Error("error response");
+    return response.data;
   }
 }

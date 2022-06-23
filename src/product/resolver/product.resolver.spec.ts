@@ -42,37 +42,37 @@ describe("Product Resolver", () => {
 
   it("createProduct", async () => {
     const result = await resolver.createProduct({
-      name: "",
+      title: "",
       description: "",
       price: 1,
-      stock: 1,
       image: "",
+      category: "",
     });
 
     expect(result).toHaveProperty("id");
-    expect(result).toHaveProperty("name");
+    expect(result).toHaveProperty("title");
     expect(result).toHaveProperty("description");
     expect(result).toHaveProperty("price");
-    expect(result).toHaveProperty("stock");
     expect(result).toHaveProperty("image");
+    expect(result).toHaveProperty("category");
   });
 
   it("updateProduct", async () => {
     const result = await resolver.updateProduct({
       id: "",
-      name: "",
+      title: "",
       description: "",
       price: 1,
-      stock: 1,
       image: "",
+      category: "",
     });
 
     expect(result).toHaveProperty("id");
-    expect(result).toHaveProperty("name");
+    expect(result).toHaveProperty("title");
     expect(result).toHaveProperty("description");
     expect(result).toHaveProperty("price");
-    expect(result).toHaveProperty("stock");
     expect(result).toHaveProperty("image");
+    expect(result).toHaveProperty("category");
   });
 
   it("product", async () => {
@@ -81,17 +81,17 @@ describe("Product Resolver", () => {
     });
 
     expect(result).toHaveProperty("id");
-    expect(result).toHaveProperty("name");
+    expect(result).toHaveProperty("title");
     expect(result).toHaveProperty("description");
     expect(result).toHaveProperty("price");
-    expect(result).toHaveProperty("stock");
     expect(result).toHaveProperty("image");
+    expect(result).toHaveProperty("category");
   });
 
   it("products", async () => {
     const result = await resolver.products({});
 
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(1);
   });
 
   it("deleteProduct", async () => {

@@ -1,23 +1,23 @@
 export const createProductMutation = `
     mutation(
-        $name: String!
+        $title: String!
         $description: String!
         $price: Int!
-        $stock: Int!
+        $category: String!
         $image: String!
     ){
     createProduct(input:{
-        name: $name
+        title: $title
         description: $description
         price: $price
-        stock: $stock
+        category: $category
         image: $image
     }){
       id
-      name
+      title
       description
       price
-      stock
+      category
       image
     }
   }`;
@@ -25,25 +25,25 @@ export const createProductMutation = `
 export const updateProductMutation = `
     mutation(
         $id: ID!
-        $name: String!
+        $title: String!
         $description: String!
         $price: Int!
-        $stock: Int!
+        $category: String!
         $image: String!
     ){
     updateProduct(input:{
         id: $id
-        name: $name
+        title: $title
         description: $description
         price: $price
-        stock: $stock
+        category: $category
         image: $image
     }){
       id
-      name
+      title
       description
       price
-      stock
+      category
       image
       }
   }`;
@@ -65,10 +65,10 @@ export const getProductQuery = `
         id: $id
     }){
       id
-      name
+      title
       description
       price
-      stock
+      category
       image
     }
   }`;
@@ -77,10 +77,10 @@ export const getProductsQuery = `
     query{
     products{
       id
-      name
+      title
       description
       price
-      stock
+      category
       image
     }
   }`;

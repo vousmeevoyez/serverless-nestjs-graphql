@@ -1,18 +1,11 @@
 export default [
   {
-    id: "5e469625-af4e-4f74-88f8-24f724bd87e9",
-    name: "Iphone 13",
-    description: "a latest iphone from apple",
-    price: 99999999,
-    stock: 1,
-    image: "image_url",
-  },
-  {
-    id: "5e469625-af4e-4f74-88f8-24f724bd87e8",
-    name: "Iphone 12",
-    description: "a latest iphone from apple",
-    price: 99999999,
-    stock: 1,
-    image: "image_url",
+    id: 1,
+    title: "Fjallraven - Foldsack No. 1 Backpack, Fits 15 Laptops",
+    price: 109.95,
+    description:
+      "Your perfect pack for everyday use and walks in the forest. Stash your laptop (up to 15 inches) in the padded sleeve, your everyday",
+    category: "men's clothing",
+    image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
   },
 ];

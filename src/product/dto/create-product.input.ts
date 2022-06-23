@@ -7,7 +7,7 @@ export class CreateProductInput implements ICreateProduct {
   @IsNotEmpty()
   @IsString()
   @Field()
-  name!: string;
+  title!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -20,12 +20,12 @@ export class CreateProductInput implements ICreateProduct {
   price!: number;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Field(() => Int)
-  stock!: number;
+  @IsString()
+  @Field()
+  image!: string;
 
   @IsNotEmpty()
   @IsString()
   @Field()
-  image!: string;
+  category!: string;
 }
