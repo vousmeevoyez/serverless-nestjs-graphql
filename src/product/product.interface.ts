@@ -1,42 +1,43 @@
+import { SortType } from "./product.enum";
 export interface ICreateProduct {
-  name: string;
+  title: string;
   description: string;
   price: number;
-  stock: number;
   image: string;
+  category: string;
 }
 
 export interface IUpdateProduct {
   id: string;
-  name?: string;
+  title?: string;
   description?: string;
   price?: number;
-  stock?: number;
   image?: string;
+  category?: string;
 }
 
 export interface IGetProduct {
   id: string;
 }
 
-export interface IGetProductsFilter {
-  name?: string;
-  description?: string;
-  priceGreater?: number;
-  priceLess?: number;
-  stockGreater?: number;
-  stockLess?: number;
+export interface IGetProductsPagination {
+  limit?: number;
+}
+
+export interface IGetProductsSort {
+  sortBy?: SortType;
 }
 
 export interface IGetProducts {
-  filter?: IGetProductsFilter;
+  pagination?: IGetProductsPagination;
+  sort?: IGetProductsSort;
 }
 
 export interface IProduct {
   id: string;
-  name: string;
+  title: string;
   description: string;
   price: number;
-  stock: number;
   image: string;
+  category: string;
 }

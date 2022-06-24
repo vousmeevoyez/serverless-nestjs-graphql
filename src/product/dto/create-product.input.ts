@@ -1,4 +1,4 @@
-import { Field, InputType, Int } from "@nestjs/graphql";
+import { Field, Float, InputType } from "@nestjs/graphql";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { ICreateProduct } from "../product.interface";
 
@@ -7,7 +7,7 @@ export class CreateProductInput implements ICreateProduct {
   @IsNotEmpty()
   @IsString()
   @Field()
-  name!: string;
+  title!: string;
 
   @IsNotEmpty()
   @IsString()
@@ -16,16 +16,16 @@ export class CreateProductInput implements ICreateProduct {
 
   @IsNotEmpty()
   @IsNumber()
-  @Field(() => Int)
+  @Field(() => Float)
   price!: number;
-
-  @IsNotEmpty()
-  @IsNumber()
-  @Field(() => Int)
-  stock!: number;
 
   @IsNotEmpty()
   @IsString()
   @Field()
   image!: string;
+
+  @IsNotEmpty()
+  @IsString()
+  @Field()
+  category!: string;
 }

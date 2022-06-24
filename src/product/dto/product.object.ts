@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from "@nestjs/graphql";
+import { Field, Float, ID, ObjectType } from "@nestjs/graphql";
 import { IProduct } from "../product.interface";
 
 @ObjectType()
@@ -7,17 +7,17 @@ export class Product implements IProduct {
   id!: string;
 
   @Field()
-  name!: string;
+  title!: string;
 
   @Field()
   description!: string;
 
-  @Field(() => Int)
+  @Field(() => Float)
   price!: number;
-
-  @Field(() => Int)
-  stock!: number;
 
   @Field()
   image!: string;
+
+  @Field()
+  category!: string;
 }

@@ -1,35 +1,38 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { Field, InputType, registerEnumType } from "@nestjs/graphql";
+import { IsEnum, IsNumber, IsOptional, ValidateNested } from "class-validator";
 import {
-  IsNumber,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from "class-validator";
-import { IGetProducts, IGetProductsFilter } from "../product.interface";
+  IGetProducts,
+  IGetProductsPagination,
+  IGetProductsSort,
+} from "../product.interface";
+import { SortType } from "../product.enum";
+
+registerEnumType(SortType, { name: "SortType" });
 
 @InputType()
-export class GetProductsFilter implements IGetProductsFilter {
-  @IsString()
-  @Field()
-  name!: string;
-
-  @IsString()
-  @Field()
-  description!: string;
-
+export class GetProductsPagination implements IGetProductsPagination {
   @IsNumber()
   @Field()
-  price!: number;
+  limit!: number;
+}
 
-  @IsNumber()
-  @Field()
-  stock!: number;
+@InputType()
+export class GetProductsSort implements IGetProductsSort {
+  @Field(() => SortType, { nullable: true })
+  @IsOptional()
+  @IsEnum(SortType)
+  sortBy!: SortType;
 }
 
 @InputType()
 export class GetProductsInput implements IGetProducts {
   @IsOptional()
   @ValidateNested({ each: true })
-  @Field(() => GetProductsFilter, { nullable: true })
-  filter?: IGetProductsFilter;
+  @Field(() => GetProductsPagination, { nullable: true })
+  pagination?: IGetProductsPagination;
+
+  @IsOptional()
+  @ValidateNested({ each: true })
+  @Field(() => GetProductsSort, { nullable: true })
+  sort?: IGetProductsSort;
 }

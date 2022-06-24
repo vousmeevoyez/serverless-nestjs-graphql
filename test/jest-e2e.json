@@ -12,8 +12,11 @@
   "coveragePathIgnorePatterns": [
     ".module.ts$",
     ".spec.ts$",
-    "migrations"
+    "migrations",
+    "<rootDir>/src/index.ts",
+    "<rootDir>/src/main.ts"
   ],
-  "testEnvironment": "node"
+  "testEnvironment": "node",
+  "testResultsProcessor": "jest-sonar-reporter"
 }
 

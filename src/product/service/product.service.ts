@@ -1,75 +1,61 @@
+import { map } from "rxjs";
+import { AxiosResponse } from "axios";
+import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
-import * as uuid from "uuid";
 import {
   ICreateProduct,
   IGetProduct,
   IGetProducts,
-  IProduct,
   IUpdateProduct,
 } from "../product.interface";
-import products from "../product.data";
 
 @Injectable()
 export class ProductService {
-  create(input: ICreateProduct): IProduct {
-    return { id: uuid.v4(), ...input };
+  url = "https://fakestoreapi.com/products";
+  constructor(private readonly httpService: HttpService) {}
+
+  create(input: ICreateProduct) {
+    return this.httpService
+      .post(this.url, input)
+      .pipe(map((response: AxiosResponse) => response.data));
   }
 
   update({ id, ...parameter }: IUpdateProduct) {
-    const product = this.findOne({ id });
-    return { id, product, ...parameter };
+    return this.httpService
+      .put(`${this.url}/${id}`, { ...parameter })
+      .pipe(map((response: AxiosResponse) => response.data));
   }
 
-  delete({ id }: IGetProduct): boolean {
-    products.filter((product: IProduct) => product.id !== id);
-    return true;
+  delete({ id }: IGetProduct) {
+    return this.httpService
+      .delete(`${this.url}/${id}`)
+      .pipe(map((response: AxiosResponse) => response.data));
   }
 
   findOne({ id }: IGetProduct) {
-    return products.find((product: IProduct) => product.id === id);
+    return this.httpService
+      .get(`${this.url}/${id}`)
+      .pipe(map((response: AxiosResponse) => response.data));
   }
 
   findMany(payload: IGetProducts) {
-    let parameter;
+    const params: Record<string, unknown> = {};
     if (payload) {
-      const { filter } = payload;
+      const { pagination, sort } = payload;
 
-      if (filter) {
-        const {
-          name,
-          description,
-          priceGreater,
-          priceLess,
-          stockGreater,
-          stockLess,
-        } = filter;
-        if (name) {
-          parameter = (product: IProduct) => product.name === name;
-        }
+      if (pagination) {
+        const { limit } = pagination;
+        params["limit"] = limit;
+      }
 
-        if (description) {
-          parameter = (product: IProduct) =>
-            product.description === description;
-        }
-
-        if (priceGreater) {
-          parameter = (product: IProduct) => product.price > priceGreater;
-        }
-
-        if (priceLess) {
-          parameter = (product: IProduct) => product.price > priceLess;
-        }
-
-        if (stockGreater) {
-          parameter = (product: IProduct) => product.stock > stockGreater;
-        }
-
-        if (stockLess) {
-          parameter = (product: IProduct) => product.stock > stockLess;
-        }
+      if (sort) {
+        const { sortBy } = sort;
+        params["sort"] = sortBy;
       }
     }
 
-    return parameter ? products.find(parameter) : products;
+    return this.httpService
+      .get(this.url, params)
+      .pipe(map((response: AxiosResponse) => response.data));
   }
 }
