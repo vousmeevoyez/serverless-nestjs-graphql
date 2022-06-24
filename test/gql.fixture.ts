@@ -2,7 +2,7 @@ export const createProductMutation = `
     mutation(
         $title: String!
         $description: String!
-        $price: Int!
+        $price: Float!
         $category: String!
         $image: String!
     ){
@@ -27,7 +27,7 @@ export const updateProductMutation = `
         $id: ID!
         $title: String!
         $description: String!
-        $price: Int!
+        $price: Float!
         $category: String!
         $image: String!
     ){

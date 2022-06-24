@@ -1,10 +1,11 @@
+import { map } from "rxjs";
+import { AxiosResponse } from "axios";
 import { HttpService } from "@nestjs/axios";
 import { Injectable } from "@nestjs/common";
 import {
   ICreateProduct,
   IGetProduct,
   IGetProducts,
-  IProduct,
   IUpdateProduct,
 } from "../product.interface";
 
@@ -13,37 +14,31 @@ export class ProductService {
   url = "https://fakestoreapi.com/products";
   constructor(private readonly httpService: HttpService) {}
 
-  async create(input: ICreateProduct): Promise<IProduct> {
-    const response = await this.httpService.post(this.url, input).toPromise();
-    console.log(response);
-    if (!response) throw new Error("error response");
-    return response.data;
+  create(input: ICreateProduct) {
+    return this.httpService
+      .post(this.url, input)
+      .pipe(map((response: AxiosResponse) => response.data));
   }
 
-  async update({ id, ...parameter }: IUpdateProduct): Promise<IProduct> {
-    const response = await this.httpService
+  update({ id, ...parameter }: IUpdateProduct) {
+    return this.httpService
       .put(`${this.url}/${id}`, { ...parameter })
-      .toPromise();
-    if (!response) throw new Error("error response");
-    return response.data;
+      .pipe(map((response: AxiosResponse) => response.data));
   }
 
-  async delete({ id }: IGetProduct): Promise<void> {
-    const response = await this.httpService
+  delete({ id }: IGetProduct) {
+    return this.httpService
       .delete(`${this.url}/${id}`)
-      .toPromise();
-    if (!response) throw new Error("error response");
+      .pipe(map((response: AxiosResponse) => response.data));
   }
 
-  async findOne({ id }: IGetProduct): Promise<IProduct> {
-    const response = await this.httpService
+  findOne({ id }: IGetProduct) {
+    return this.httpService
       .get(`${this.url}/${id}`)
-      .toPromise();
-    if (!response) throw new Error("error response");
-    return response.data;
+      .pipe(map((response: AxiosResponse) => response.data));
   }
 
-  async findMany(payload: IGetProducts): Promise<IProduct[]> {
+  findMany(payload: IGetProducts) {
     const params: Record<string, unknown> = {};
     if (payload) {
       const { pagination, sort } = payload;
@@ -59,10 +54,8 @@ export class ProductService {
       }
     }
 
-    const response = await this.httpService
-      .get(this.url, { params })
-      .toPromise();
-    if (!response) throw new Error("error response");
-    return response.data;
+    return this.httpService
+      .get(this.url, params)
+      .pipe(map((response: AxiosResponse) => response.data));
   }
 }

@@ -12,28 +12,28 @@ export class ProductResolver {
 
   @Mutation(() => Product)
   createProduct(@Args("input") input: CreateProductInput) {
-    return this.productService.create(input);
+    return this.productService.create(input).toPromise();
   }
 
   @Mutation(() => Product)
   updateProduct(@Args("input") input: UpdateProductInput) {
-    return this.productService.update(input);
+    return this.productService.update(input).toPromise();
   }
 
   @Mutation(() => Boolean)
   async deleteProduct(@Args("input") input: GetProductInput) {
-    await this.productService.delete(input);
+    await this.productService.delete(input).toPromise();
     // no void available on graphql
     return true;
   }
 
   @Query(() => Product)
   product(@Args("input") input: GetProductInput) {
-    return this.productService.findOne(input);
+    return this.productService.findOne(input).toPromise();
   }
 
   @Query(() => [Product])
   products(@Args("input", { nullable: true }) input: GetProductsInput) {
-    return this.productService.findMany(input);
+    return this.productService.findMany(input).toPromise();
   }
 }

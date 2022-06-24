@@ -1,36 +1,35 @@
-import { MockFunctionMetadata, ModuleMocker } from "jest-mock";
+import { of } from "rxjs";
+import { AxiosResponse } from "axios";
 import { HttpService } from "@nestjs/axios";
 import { Test, TestingModule } from "@nestjs/testing";
 import { ProductService } from "../service/product.service";
-//import { IGetProducts } from "../product.interface";
-//import { SortType } from "../product.enum";
+import { IGetProducts } from "../product.interface";
+import { SortType } from "../product.enum";
 import products from "../product.data";
 
-const moduleMocker = new ModuleMocker(global);
+class MockHttpService {
+  post = jest.fn();
+  put = jest.fn();
+  get = jest.fn();
+  delete = jest.fn();
+}
 
 let service: ProductService;
+let httpService: HttpService;
 
 beforeAll(async () => {
   const module: TestingModule = await Test.createTestingModule({
-    providers: [ProductService],
-  })
-    .useMocker((token) => {
-      if (token === HttpService) {
-        return {
-          post: jest.fn().mockResolvedValue(products[0]),
-        };
-      }
-      if (typeof token === "function") {
-        const mockMetadata = moduleMocker.getMetadata(
-          token,
-        ) as MockFunctionMetadata<any, any>;
-        const Mock = moduleMocker.generateFromMetadata(mockMetadata);
-        return new Mock();
-      }
-    })
-    .compile();
+    providers: [
+      ProductService,
+      {
+        provide: HttpService,
+        useClass: MockHttpService,
+      },
+    ],
+  }).compile();
 
   service = module.get<ProductService>(ProductService);
+  httpService = module.get<HttpService>(HttpService);
 });
 
 describe("Product Service", () => {
@@ -39,14 +38,26 @@ describe("Product Service", () => {
   });
 
   it("create", async () => {
-    const result = await service.create({
-      title: "",
-      description: "",
-      price: 1,
-      image: "",
-      category: "",
-    });
+    const response: AxiosResponse<any> = {
+      data: products[0],
+      headers: {},
+      config: { url: "https://fakestoreapi.com/products" },
+      status: 200,
+      statusText: "OK",
+    };
+    jest.spyOn(httpService, "post").mockImplementationOnce(() => of(response));
 
+    const result = await service
+      .create({
+        title: "",
+        description: "",
+        price: 1,
+        image: "",
+        category: "",
+      })
+      .toPromise();
+
+    expect(httpService.post).toBeCalled();
     expect(result).toHaveProperty("id");
     expect(result).toHaveProperty("title");
     expect(result).toHaveProperty("description");
@@ -55,50 +66,104 @@ describe("Product Service", () => {
     expect(result).toHaveProperty("category");
   });
 
-  //it("update", async () => {
-  //  const result = await service.update({
-  //    id: "",
-  //    title: "",
-  //    description: "",
-  //    price: 1,
-  //    image: "",
-  //    category: "",
-  //  });
+  it("update", async () => {
+    const response: AxiosResponse<any> = {
+      data: products[0],
+      headers: {},
+      config: { url: "https://fakestoreapi.com/products" },
+      status: 200,
+      statusText: "OK",
+    };
+    jest.spyOn(httpService, "put").mockImplementationOnce(() => of(response));
 
-  //  expect(result).toHaveProperty("id");
-  //  expect(result).toHaveProperty("title");
-  //  expect(result).toHaveProperty("description");
-  //  expect(result).toHaveProperty("price");
-  //  expect(result).toHaveProperty("image");
-  //  expect(result).toHaveProperty("category");
-  //});
+    const result = await service
+      .update({
+        id: "",
+        title: "",
+        description: "",
+        price: 1,
+        image: "",
+        category: "",
+      })
+      .toPromise();
 
-  //it("findOne", async () => {
-  //  const result = await service.findOne({
-  //    id: "5e469625-af4e-4f74-88f8-24f724bd87e8",
-  //  });
+    expect(httpService.put).toBeCalled();
+    expect(result).toHaveProperty("id");
+    expect(result).toHaveProperty("title");
+    expect(result).toHaveProperty("description");
+    expect(result).toHaveProperty("price");
+    expect(result).toHaveProperty("image");
+    expect(result).toHaveProperty("category");
+  });
 
-  //  expect(result).toHaveProperty("id");
-  //  expect(result).toHaveProperty("title");
-  //  expect(result).toHaveProperty("description");
-  //  expect(result).toHaveProperty("price");
-  //  expect(result).toHaveProperty("image");
-  //  expect(result).toHaveProperty("category");
-  //});
+  it("findOne", async () => {
+    const response: AxiosResponse<any> = {
+      data: products[0],
+      headers: {},
+      config: { url: "https://fakestoreapi.com/products" },
+      status: 200,
+      statusText: "OK",
+    };
+    jest.spyOn(httpService, "get").mockImplementationOnce(() => of(response));
 
-  //it.each([
-  //  [{ sort: { sortBy: SortType.ASCEND } }, 1],
-  //  [{ pagination: { limit: 1 } }, 1],
-  //])("findMany %s", async (parameter: IGetProducts, expected: number) => {
-  //  const result = await service.findMany(parameter);
-  //  expect(result).toHaveLength(expected);
-  //});
+    const result = await service
+      .findOne({
+        id: "5e469625-af4e-4f74-88f8-24f724bd87e8",
+      })
+      .toPromise();
 
-  //it("delete", async () => {
-  //  const result = await service.delete({
-  //    id: "",
-  //  });
+    expect(httpService.get).toBeCalled();
+    expect(result).toHaveProperty("id");
+    expect(result).toHaveProperty("title");
+    expect(result).toHaveProperty("description");
+    expect(result).toHaveProperty("price");
+    expect(result).toHaveProperty("image");
+    expect(result).toHaveProperty("category");
+  });
 
-  //  expect(result).toBeTruthy();
-  //});
+  it.each([
+    [{ sort: { sortBy: SortType.ASCEND } }, 1],
+    [{ pagination: { limit: 1 } }, 1],
+  ])("findMany %s", async (parameter: IGetProducts, expected: number) => {
+    const response: AxiosResponse<any> = {
+      data: products,
+      headers: {},
+      config: { url: "https://fakestoreapi.com/products" },
+      status: 200,
+      statusText: "OK",
+    };
+    jest.spyOn(httpService, "get").mockImplementationOnce(() => of(response));
+
+    const result = await service.findMany(parameter).toPromise();
+
+    expect(httpService.get).toBeCalled();
+    expect(result).toHaveLength(expected);
+    expect(result[0]).toHaveProperty("id");
+    expect(result[0]).toHaveProperty("title");
+    expect(result[0]).toHaveProperty("description");
+    expect(result[0]).toHaveProperty("price");
+    expect(result[0]).toHaveProperty("image");
+    expect(result[0]).toHaveProperty("category");
+  });
+
+  it("delete", async () => {
+    const response: AxiosResponse<any> = {
+      data: products,
+      headers: {},
+      config: { url: "https://fakestoreapi.com/products" },
+      status: 200,
+      statusText: "OK",
+    };
+    jest
+      .spyOn(httpService, "delete")
+      .mockImplementationOnce(() => of(response));
+
+    await service
+      .delete({
+        id: "",
+      })
+      .toPromise();
+
+    expect(httpService.delete).toBeCalled();
+  });
 });
