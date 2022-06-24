@@ -33,6 +33,7 @@ jobs:
       - run: npm run test:cov:all
         env:
           CI: true
+      - run: npx ts-node ./merge-coverage.ts --report ./coverage/unit/coverage-final.json --report ./coverage/e2e/coverage-final.json
 
       - uses: actions/upload-artifact@v3
         with:
