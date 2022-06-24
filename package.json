@@ -73,6 +73,7 @@
     "glob-promise": "4.2.2",
     "istanbul-api": "^3.0.0",
     "jest": "28.1.1",
+    "jest-sonar-reporter": "^2.0.0",
     "js-yaml": "4.1.0",
     "lint-staged": "13.0.2",
     "prettier": "2.7.1",
@@ -110,7 +111,8 @@
       "<rootDir>/src/index.ts",
       "<rootDir>/src/main.ts"
     ],
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testResultsProcessor": "jest-sonar-reporter"
   },
   "lint-staged": {
     "*.ts": [
